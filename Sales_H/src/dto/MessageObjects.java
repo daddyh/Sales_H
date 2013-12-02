@@ -5,6 +5,7 @@ public class MessageObjects {
 	private String msg_id;
 	private String message;
 	private String fecha;
+	private String otro;
 	//Getters and Setters
 	
 	
@@ -25,6 +26,12 @@ public class MessageObjects {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	public String getOtro() {
+		return otro;
+	}
+	public void setOtro(String otro) {
+		this.otro = otro;
 	}
 
 }
