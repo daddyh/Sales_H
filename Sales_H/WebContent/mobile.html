@@ -1,0 +1,189 @@
+
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Sistema Punto Venta</title> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link rel="stylesheet" href="css/jquery.mobile-1.2.0.css" />
+<!--     <link rel="stylesheet" href="css/jquery-mobile-fluid960.css" /> -->
+    <link rel="stylesheet" href="css/jquery-mobile-fluid960.css" />
+    <link rel="shortcut icon" href="favicon.ico"> 
+    <script src="js/jquery-1.8.2.min.js"></script>
+    <script src="js/dust-full-1.1.1.js"></script>
+    <script src="js/jquery.mobile-1.2.0.min.js"></script>
+    <script src="js/jquery.validate.js"></script>
+    <script src="js/jquery.form2js.js"></script>
+    <script src="js/jquery.js2form.js"></script>
+    <script type="text/javascript" src="js/json2.js"></script>
+
+
+<style type="text/css">
+
+.text_title_detail_info{
+font-size: 14px;
+padding: 3px 12px 3px 12px; 
+text-align: center;
+}
+
+.text_title_detail_info2{
+font-size: 14px;
+font-weight: bold;
+}
+
+.culumn_1_detail{
+text-align:right; 
+font-size:small; 
+padding: 0 5px;
+font-weight: bold;
+}
+
+.culumn_2_detail{
+text-align:left; 
+padding: 0 3px;
+text-shadow: none;
+}
+
+
+
+</style>
+<body class="body">
+
+
+<div>
+
+
+   <!-- Pagina Welcome Clientes -->
+        <div data-role="page" id="pagewelcomeclientes" data-theme="a">
+           <!-- Encabezado -->
+           <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+              <a type="button" class="menu" data-icon="gear">Menu</a>
+              <h1 style="white-space:normal">Listado de Clientes</h1>
+              <a href="iMenu.html" data-direction="reverse" type="button" data-icon="home">Home</a>
+           </div>
+           <!-- /Encabezado -->
+
+           <!--  Detalle Completo Cliente -->
+
+
+
+
+           <div data-role="popup" id="popupDialog2" data-theme="b" data-position-to="origin" data-overlay-theme="a" >
+              <div data-theme="a" data-role="header" role="banner">
+              <div id="detail_head_name" class="text_title_detail_info">Jose Alonso Hurtado Tenorio </div>
+              </div>
+
+
+                <div style="padding:5px; font-size: small; margin: 0; width:400px"> 
+                  <div id="detail_head_corp" class="text_title_detail_info text_title_detail_info2">Apple Corporation</div>
+                  
+                     <fieldset class="container_12" id="customer_info">
+                   
+                     <div class="grid_2 culumn_1_detail">Nombre: </div>
+                     <div class="grid_9 culumn_2_detail"><div id="pupfirstname">xxxxxxxxxxxxxxx</div></div>
+                     
+                     <div class="grid_2 culumn_1_detail">Nombre: </div>
+                     <div class="grid_9 culumn_2_detail"><div id="puplastname">xxxxxxxxxxxxxxx</div></div>
+
+                      <div class="grid_2 culumn_1_detail suffix_9">RFC:</div>
+                  
+                     </fieldset>
+
+                </div>
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+           <div data-role="popup" id="popupDialogx" data-theme="b" data-position-to="origin" data-overlay-theme="a" >
+              <div data-theme="a" data-role="header" role="banner">
+              <div id="detail_head_name" class="text_title_detail_info">Jose Alonso Hurtado Tenorio </div>
+              </div>
+
+
+                <div style="padding:5px; font-size: small; margin: 0;"> 
+                  <div id="detail_head_corp" class="text_title_detail_info text_title_detail_info2">Apple Corporation</div>
+                  
+                  <div class="ui-grid-a" id="customer_info">
+                   
+                     <div class="ui-block-a culumn_1_detail">Nombre: </div>
+                     <div class="ui-block-b culumn_2_detail"><div id="pupfirstname">xxxxxxxxxxxxxxx</div></div>
+                     
+                     <div class="ui-block-a culumn_1_detail">Nombre: </div>
+                     <div class="ui-block-b culumn_2_detail"><div id="pupfirstname">xxxxxxxxxxxxxxx</div></div>
+                  
+                  </div>
+                </div>
+
+
+          </div>
+          <!-- /Detalle Completo Cliente -->
+
+           <div data-role="popup" id="popupDialog22" data-theme="b" data-position-to="origin" data-overlay-theme="a" div id="popupDialog" class="ui-corner-all ui-popup ui-body-c ui-overlay-shadow" style="max-width:400px;" data-theme="c" data-overlay-theme="a" data-role="popup" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+
+            <fieldset class="container_12">
+            <div class="grid_6">
+            <p>Alonso Wallace</p>
+            </div><!--grid_3-->
+            <div class="grid_6">
+            <p>Wallace</p>
+            </div><!--grid_3-->     
+            </fieldset>
+
+          </div>
+
+            <div id="popupDialog" class="ui-corner-all ui-popup ui-body-c ui-overlay-shadow" style="max-width:500px;" data-theme="c" data-overlay-theme="a" data-role="popup" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+
+            <div style="padding:5px; font-size: small; margin: 0;"> 
+              <div class="ui-grid-a" id="customer_info">
+                <div class="ui-block-a" style="text-align:right; font-size:small; padding: 0.4em 5px;"><strong>Nombre: </strong></div>
+               <div class="ui-block-b"><div style="text-align:left; padding: 0.4em 3px;" id="pupfirstname">x</div></div>
+              </div>
+            </div>
+
+            </div>
+
+
+           <!-- Contenido -->
+           <div data-role="content" id='contentwelcomeclientes'>
+                  <ul   data-role="listview" 
+                    data-inset="true" 
+                    data-filter="true"
+                    data-autodividers="true"
+                    data-filter-placeholder="Filtrar listado de clientes con una busqueda..." 
+                    data-sort="true" 
+                    data-theme="c"
+                    data-divider-theme="c"
+                    data-split-icon="grid" 
+                    data-split-theme="d"
+                    id="juntar"
+                    class="listaclientes"
+                    >
+               </ul>
+
+               <div id="artistsLazyloaderProgressDiv" class="width-hundred-percent" style="display:none">
+                <div class="width-two-hundred-pixels center-element align-center">
+                  <img src="http://www.musotic.com/images/loading_more_bar.gif" />
+                </div>
+              </div>   
+
+
+           </div>
+           
+        <a data-role="button" href="#popupDialog2" data-rel="popup" data-transition="pop">Open Popup</a>
+
+
+           <!-- /Contenido -->
+     </div>
+    <!-- /Pagina Welcome Clientes -->
+
+</div>
+</body>
+
+</html>

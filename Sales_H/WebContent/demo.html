@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <title>General Test Page</title>
+
+        <link rel="stylesheet" href="http://www.musotic.com/includes/css/mpdtunes.theme.css" />
+        <link rel="stylesheet" href="http://www.musotic.com/includes/css/mpdtunes.main.css" />
+        <link rel="stylesheet" href="http://www.musotic.com/includes/css/jquery.mobile.custom.structure.css" />
+        <link rel="stylesheet" href="http://www.musotic.com/includes/css/jquery.mobile.structure.overrides.css" />
+        <link rel="stylesheet" href="http://www.musotic.com/includes/css/mpdtunes.player.css" />
+
+        <script src="js/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="http://www.musotic.com/includes/js/jquery.easing.1.3.js"></script>
+        <script type="text/javascript" src="http://www.musotic.com/includes/js/jquery.scrollTo-1.4.2.js"></script>
+        <script src="js/dust-full-1.1.1.js"></script>
+        <script type="text/javascript" src="http://www.musotic.com/includes/js/jquery.mobile.defaults.overrides.js"></script>
+        <script src="js/jquery.mobile-1.2.0.min.js"></script>
+        <script type="text/javascript" src="http://www.musotic.com/includes/js/jquery.mobile.lazyloader.js"></script>
+        
+<script type="text/javascript" >
+function incremental_scroll_up() {
+
+    var scroll_increment = $('html,body').find( '[data-role="page"]' ).height();
+    
+    current_scroll_position = document.documentElement.scrollTop || document.body.scrollTop;
+
+    var scroll_up_position = current_scroll_position - scroll_increment;
+
+    if (scroll_up_position < 0) {
+        
+        scroll_up_position = 0;
+    }
+        
+    $('html,body').animate({scrollTop:scroll_up_position}, 1000, function() {
+    
+        // do whatever needs to be done after the scroll animation
+    });
+}
+
+function incremental_scroll_down(section) {
+
+    var scroll_increment = $('html,body').find( '[data-role="page"]' ).height();
+
+    current_scroll_position = document.documentElement.scrollTop || document.body.scrollTop;
+
+    var scroll_down_position = 0;
+
+    if (current_scroll_position > 0) {
+        
+        scroll_down_position = current_scroll_position;
+    }
+
+    scroll_down_position += scroll_increment;
+
+    $('html,body').animate({scrollTop:scroll_down_position}, 1000, function() {
+    
+        // do whatever needs to be done after the scroll animation
+    });
+        
+    // Manually make a call to the public version of the _load function
+    $( "#index" ).lazyloader( "loadMore" );
+}
+        </script>
+        
+    </head>
+<body>
+<div id="index" data-role="page" data-theme="a" data-divider-theme="a">
+
+    <div id="index_header" data-role="header" data-theme="k" role="banner" data-position="fixed">
+
+        <a href="#settings" data-role="button" data-theme="k" data-icon="gear" data-iconpos="left" data-transition="slidedown" title="Settings">Settings</a>
+        
+        <h1 id="headerTitleDiv" class="ui-title" tabindex="0" role="heading" aria-level="1"></h1>
+
+        
+        <a href="#queue" data-role="button" data-theme="k" data-icon="arrow-r" data-iconpos="right" data-transition="slide" title="Queue">Queue</a>
+    </div>
+<script type="text/javascript">
+
+// set the style to use for active button state (hover will give the desired effect)
+$.mobile.activeBtnClass = 'ui-btn-hover-p';
+
+var playlist_index_offset = 0;
+
+$("body").on("lazyloadercreate", "#index", function ( evt ){
+
+    //alert("lazyloadercreate called!");
+});
+
+$("body").on("lazyloadererror", "#index", function ( evt ){
+
+    //alert("lazyloadererror called!\n\nevt.instances: "+JSON.stringify(evt));
+});
+
+$("body").on("lazyloaderdoneloading", "#index", function ( evt ){
+
+    $.mobile.hidePageLoadingMsg();
+    $.mobile.loadingMessage = "Loading";
+});
+
+$("body").on("lazyloaderalldone", "#index", function ( evt ){
+
+    $.mobile.hidePageLoadingMsg();
+    $.mobile.loadingMessage = "Loading";
+});
+
+$("body").on("lazyloaderbusy", "#index", function ( evt ){
+
+    $.mobile.hidePageLoadingMsg();
+    $.mobile.loadingMessage = "Loading";
+});
+
+$('body').on('pageshow', '#index', function( evt, ui ) {
+
+    // Initialize the lazyloader widget
+    $( "#index" ).lazyloader();
+
+    // Set some default options for the lazyloader
+    $.mobile.lazyloader.prototype.timeoutOptions.mousewheel = 300;
+    $.mobile.lazyloader.prototype.timeoutOptions.scrollstart = 700;
+    $.mobile.lazyloader.prototype.timeoutOptions.scrollstop = 100;
+    $.mobile.lazyloader.prototype.timeoutOptions.showprogress = 100;
+
+});
+
+$( 'body' ).on( 'pageinit', '#queue', function( evt, ui ) {
+
+    // Set up the variable options to pass to the lazyloader reinitialize function
+    var options = { "threshold"  : 640,
+                    "retrieve"   : 10,
+                    "retrieved"  : 10,
+                    "bubbles"    : true,
+                    "offset"     : playlist_index_offset };
+
+    // Set up the page specific settings to pass to the lazyloader reinitialize function
+    var settings = { "pageId"              : "queue",
+                     "templateType"        : "dust",
+                     "templateId"          : "queueDustTemplate",
+                     "templatePrecompiled" : false,
+                     "mainId"              : "queueTracksList",
+                     "progressDivId"       : "queueLazyloaderProgressDiv",
+                     "moreUrl"             : "GetCustomers",
+                     "clearUrl"            : "http://www.musotic.com/home/clear_session",
+                     "JSONP"               : true,
+                     "JSONPCallback"       : "callback"};
+
+    // Set up the post parameters to pass to the lazyloader reinitialize function
+    var parameters = { "retrieve"   : options.retrieve,
+                       "retrieved"  : options.retrieved,
+                       "offset"     : options.offset };
+
+    // Reinitialize the lazyloader so that it correctly handles the listview on the artists page
+    $( "#index" ).lazyloader( "reInitialize", options, settings, parameters );
+});
+
+$('body').on('pageinit', '#artists', function(evt, ui) {
+    
+    // Reset the lazy loader instance for the albums page
+    $( "#index" ).lazyloader( "reset", "albums" );
+
+    // Set up the variable options to pass to the lazyloader reinitialize function
+    var options = { "threshold"   : 360,
+                    "retrieve"    : 20,
+                    "retrieved"   : 20,
+                    "bubbles"     : true,
+                    "offset"      : 0 };
+
+    // Set up the page specific settings to pass to the lazyloader reinitialize function
+    var settings = { "pageId"                : "artists",
+                     "templateType"          : "dust",
+                     "templateId"            : "artistsDustTemplate",
+                     "templatePrecompiled"   : false,
+                     "mainId"                : "artistsList",
+                     "progressDivId"         : "artistsLazyloaderProgressDiv",
+                     "moreUrl"               : "http://www.musotic.com/samples/artists.sample.page.php",
+                     "clearUrl"              : "http://www.musotic.com/home/clear_session",
+                     "JSONP"                 : true,
+                     "JSONPCallback"         : "callback" };
+
+    // Set up the post parameters to pass to the lazyloader reinitialize function
+    var parameters = {  "retrieve"   : options.retrieve,
+                        "retrieved"  : options.retrieved,
+                        "offset"     : options.offset };
+
+    // Reinitialize the lazyloader so that it correctly handles the listview on the artists page
+    $( "#index" ).lazyloader( "reInitialize", options, settings, parameters );
+});
+
+
+
+
+
+    </script>
+    <div data-role="header" class="ui-bar-k ui-header" role="banner">
+        <div id="jukebox">
+            <div class="controls">
+                <table>
+                    <tr>
+                        <td>
+                            <div id="playerCurrentlyPlayingDiv" style="display:none;">
+                                <table class="width-hundred-percent">
+                                    <tr>
+                                        <td class="album-art-cell">
+                                            <div id="albumArtDiv">
+                                                <img src="" id="currentAlbumArtImg" class="albumart" alt="Album Art" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td class="valign-top align-left">
+                                                        <div id="artistDiv"></div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="valign-top align-left">
+                                                        <div id="albumDiv"></div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="valign-top align-left">
+                                                        <div id="trackDiv"></div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="width-hundred-percent">
+
+                            <table class="width-hundred-percent">
+                                <tr>
+                                    <td class="player-little-cell">
+
+                                        <a href="#" id="repeat" data-role="button" data-icon="repeat" data-iconpos="notext" class="repeat ui-btn-up-k" title="Repeat">#</a>
+                                    </td>
+                                    <td class="player-main-cell width-hundred-percent align-center">
+                        
+                                        <div class="center-element align-center player-main-div">
+
+                                            <table class="align-center">
+                                                <tr>
+                                                    <td class="player-prev-cell align-right">
+
+                                                        <a href="#" id="prev" data-icon="previous" data-theme="k" class="previous ui-btn-previous ui-btn ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-up-k" title="Previous"><span class="previous ui-btn-inner ui-btn-corner-all"><span class="previous ui-btn-text"></span><span class="previous-inner ui-icon ui-icon-previous ui-icon-shadow"></span></span></a>
+                                                    </td>
+                                                    
+                                                    <td class="player-play-cell align-center">
+
+                                                        <a href="#" id="playpause" data-icon="play" data-theme="k" class="play ui-btn-play ui-btn ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-up-k" title=""><span id="playpause-span-one" class="play ui-btn-inner ui-btn-corner-all"><span id="playpause-span-two" class="play ui-btn-text"></span><span id="playpause-span-three" class="play-inner ui-icon ui-icon-play ui-icon-shadow"></span></span></a>                                           
+                                                    </td>
+
+                                                    <td class="player-next-cell align-left">
+
+                                                        <a href="#" id="next" data-icon="next" data-theme="k" class="next ui-btn-next ui-btn ui-btn-icon-notext ui-btn-corner-all ui-shadow ui-btn-up-k" title="Next"><span class="next ui-btn-inner ui-btn-corner-all"><span class="next ui-btn-text"></span><span class="next-inner ui-icon ui-icon-next ui-icon-shadow"></span></span></a>                                              
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+
+                                    <td class="player-little-cell">
+                                    
+                                        <a href="#" id="shuffle" data-role="button" data-icon="shuffle" data-iconpos="notext" class="shuffle ui-btn-up-k" title="Shuffle"></a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <audio src="" autoplay="autoplay" class="aud" preload="auto" autobuffer id="audio"></audio>
+        </div>
+    </div>
+    
+    <div data-role="content">
+
+        <ul id="libraryNav" data-role="listview" data-inset="true" data-divider-theme="k" data-theme="k">
+
+            <li data-role="list-divider">Library</li>
+            <li>
+                <a href="#artists" data-transition="slide">Artists</a>
+            </li>
+            <li>
+                <a href="#genres" data-transition="slide">Genres</a>
+            </li>
+            <li>
+                <a href="#playlists" data-transition="slide">Playlists</a>
+            </li>
+            <li>
+                <a href="#stations" data-transition="slide">Stations</a>
+            </li>
+        </ul>
+        <ul id="adminNav" data-role="listview" data-inset="true" data-divider-theme="k" data-theme="k">
+            <li data-role="list-divider">Administration</li>
+            <li>
+                <a href="#uploader" data-transition="slide">Upload Music</a>
+            </li>
+
+            <li>
+                <a href="#account" data-transition="slide" data-ajax="false">My Account</a>
+            </li>
+            <li>
+                <a href="#admin" data-transition="slide" data-ajax="false">My Site</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="index_footer" data-role="footer" data-theme="k" data-position="fixed">
+        <div id="trackProgressDiv" style="">
+            <table class="width-hundred-percent">
+                <tr>
+                    <td colspan="3" class="width-hundred-percent">
+                        <div class="width-hundred-percent ui-bar-progress-div">
+                            <div class="ui-bar-progress ui-bar-load-progress" style="width:100%;" id="loadProgressDiv" >
+                            </div>
+                            <div class="ui-bar-progress ui-bar-play-progress" style="width:92%;" id="playProgressDiv" >
+                            </div>
+                            <div class="ui-bar-progress ui-bar-stream-progress" id="streamProgressDiv" >
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="track-play-duration-cell valign-bottom align-left" >
+
+                        <div id="trackPlayDuration">-:--</div>
+                    </td>
+                    <td class="track-duration-middle-cell align-center">
+                        <div id="stationStreamProgressDiv"></div>
+                    </td>
+                    <td class="track-total-duration-cell valign-bottom align-right">
+                        <div id="trackTotalDuration">-:--</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+             
+<div id="artists" data-role="page" data-theme="a" data-divider-theme="k" >
+
+    <div data-role="header" data-theme="k" class="ui-bar-k ui-header" role="banner" data-position="fixed">
+        <a href="#" id="header-back-link" data-role="button" data-theme="k" data-icon="arrow-l" data-iconpos="left" class="ui-btn-left ui-btn-up-k" data-transition="slide" data-direction="reverse" data-rel="back" title="Back">Back</a>
+        
+        <h1 id="headerTitleDiv" class="ui-title" tabindex="0" role="heading" aria-level="1"></h1>
+
+        <a href="#index" id="header-home-link" data-role="button" data-theme="k" data-icon="home" data-iconpos="notext" class="ui-btn-right ui-btn-up-k" data-transition="flow" data-direction="reverse" title="Home" data-ajax="true">Home</a>
+    </div>  
+
+    <div data-role="content">
+
+        <div class="padding-bottom-fifteen-pixels"></div>
+        
+        <input type="hidden" id="param_one" name="param_one" value="" />
+
+        <ul id="artistsList" data-role="listview" role="lazyloader" data-filter="true" data-inset="true" data-theme="k" data-divider-theme="k">
+
+  
+        </ul>
+
+        <div id="artistsLazyloaderProgressDiv" class="width-hundred-percent display-none">
+            <div class="width-two-hundred-pixels center-element align-center">
+                <img src="http://www.musotic.com/images/loading_more_bar.gif" />
+            </div>
+        </div>
+
+        <br class="clear" />
+
+    </div>
+
+    <div id="site_footer" data-role="footer" data-theme="k" class="ui-bar-k ui-footer" data-position="fixed">
+        <table class="width-hundred-percent">
+            <tr>
+                <td class="width-twenty-percent align-left">
+
+                    <a href="#" id="scroll_up" onclick="incremental_scroll_up();" data-role="button" data-icon="arrow-u" data-iconpos="notext" class="ui-btn-right" data-theme="k" title="Scroll Up"></a>
+                </td>
+                <td class="width-sixty-percent align-center">
+
+                
+                </td>
+                <td class="width-twenty-percent align-right">
+
+                    <a href="#" id="scroll_down" onclick="incremental_scroll_down('artists');" data-role="button" data-icon="arrow-d" data-iconpos="notext" class="ui-btn-left" data-theme="k" title="Scroll Down"></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="queue" data-role="page" data-theme="a" data-divider-theme="k" data-url="/queue" data-external-page="true" tabindex="0" class="ui-page ui-body-a ui-page-header-fixed ui-page-footer-fixed">
+
+    <div data-role="header" data-theme="k" class="ui-bar-k ui-header ui-header-fixed slidedown in" role="banner" data-position="fixed">
+
+    <a href="#" id="header-back-link" data-role="button" data-theme="k" data-icon="arrow-l" data-iconpos="left" class="ui-btn-left ui-btn-up-k ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-left" data-transition="slide" data-direction="reverse" data-rel="back" title="Back" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Back</span><span class="ui-icon ui-icon-arrow-l ui-icon-shadow">&nbsp;</span></span></a>
+    
+        <h1 id="headerTitleDiv" class="ui-title" tabindex="0" role="heading" aria-level="1"></h1>
+
+    
+    <a href="#index" id="header-home-link" data-role="button" data-theme="k" data-icon="home" data-iconpos="notext" class="ui-btn-right ui-btn-up-k ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext" data-transition="flow" data-direction="reverse" title="Home" data-ajax="true" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Home</span><span class="ui-icon ui-icon-home ui-icon-shadow">&nbsp;</span></span></a>
+</div>
+    <div data-role="content" class="align-center ui-content ui-body-a" data-theme="a" data-divider-theme="k" role="main">
+        
+        <div id="currentlyPlayingInfoDiv" style="display:none;">
+        
+            <ul data-role="listview" data-inset="true" data-divider-theme="k" data-theme="k" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+
+                <li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-k ui-corner-top"></li>
+
+                <li class="ui-li ui-li-static ui-body-k">
+                    <table class="width-hundred-percent align-left">
+                        <tbody><tr>
+                            <td class="width-hundred-percent align-left">
+                                
+                                <table class="width-hundred-percent">
+                                    <tbody><tr>
+                                        <td rowspan="3" class="currently-playing-album-art-cell align-left">
+                                            <div id="currentlyPlayingAlbumArtDiv" class="currently-playing-album-art-div">
+                                                <img src="http://www.mpdtun.es/queue" alt="Album Art" class="currentalbumart">
+                                            </div>
+                                        </td>
+                                        <td class="align-left">
+                                            <div id="currentlyPlayingArtistDiv" class="currently-playing-info-div font-size-thirteen-pixels" style="max-width: 231px; "></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-left">
+                                            <div id="currentlyPlayingAlbumDiv" class="currently-playing-info-div font-size-twelve-pixels" style="max-width: 231px; "></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-left">
+                                            <div id="currentlyPlayingTrackDiv" class="currently-playing-info-div font-size-eleven-pixels" style="max-width: 231px; "></div>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </li>
+
+                <li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-k ui-corner-bottom"></li>
+            </ul>
+        </div>
+
+        <a href="#" data-role="button" data-rel="dialog" data-transition="slidedown" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-p" data-theme="p"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">New playlist based on queue</span></span></a>
+        
+        <ul id="queueTracksList" data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-theme="k" data-divider-theme="k">
+
+            <li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-k ui-corner-top">Current queue</li>
+
+            <li class="ui-li-has-thumb queued_track0">
+                <a href="" data-icon="none" onclick="bump_track(0);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Need You By Tamika</h3>
+                    <p class='ui-li-aside ui-li-desc'>4:01</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track1">
+                <a href="" data-icon="none" onclick="bump_track(1);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Ina Time Like Now</h3>
+                    <p class='ui-li-aside ui-li-desc'>1:42</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track2">
+                <a href="" data-icon="none" onclick="bump_track(2);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Lonely Days</h3>
+                    <p class='ui-li-aside ui-li-desc'>1:39</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track3">
+                <a href="" data-icon="none" onclick="bump_track(3);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Changes</h3>
+                    <p class='ui-li-aside ui-li-desc'>1:38</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track4">
+                <a href="" data-icon="none" onclick="bump_track(4);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Fast Forward</h3>
+                    <p class='ui-li-aside ui-li-desc'>2:39</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track5">
+                <a href="" data-icon="none" onclick="bump_track(5);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Intoxication</h3>
+                    <p class='ui-li-aside ui-li-desc'>1:52</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track6">
+                <a href="" data-icon="none" onclick="bump_track(6);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Serenity</h3>
+                    <p class='ui-li-aside ui-li-desc'>1:51</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track7">
+                <a href="" data-icon="none" onclick="bump_track(7);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Jah Love</h3>
+                    <p class='ui-li-aside ui-li-desc'>1:33</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track8">
+                <a href="" data-icon="none" onclick="bump_track(8);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Superior</h3>
+                    <p class='ui-li-aside ui-li-desc'>4:17</p>
+                </a>
+            </li>
+
+            <li class="ui-li-has-thumb queued_track9">
+                <a href="" data-icon="none" onclick="bump_track(9);" class="ui-link-inherit" title="Bump to top of queue">
+                    <img src="http://www.musotic.com/cache/art/master/4bbcf67459a188992bb06f0d622856706bfb46fd.jpeg" class="ui-li-thumb track-item-image" />
+                    <h3 class="track-title-heading ui-li-heading">Beautiful Soul By Mamadee</h3>
+                    <p class='ui-li-aside ui-li-desc'>3:35</p>
+                </a>
+            </li>
+
+            <li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-k ui-corner-bottom"></li>
+        </ul>           
+
+        <div id="queueLazyloaderProgressDiv" class="width-hundred-percent display-none">
+            <div class="width-two-hundred-pixels center-element align-center">
+                <img src="http://www.musotic.com/images/loading_more_bar.gif">
+            </div>
+        </div>
+
+        <br class="clear">
+
+    </div>
+
+    <div id="site_footer" data-role="footer" data-theme="k" class="ui-bar-k ui-footer ui-footer-fixed slideup in" data-position="fixed" role="contentinfo">
+        <table class="width-hundred-percent">
+            <tbody>
+                <tr>
+                    <td class="width-twenty-percent align-left">
+
+                        <a href="#" id="scroll_up" onclick="incremental_scroll_up();" data-role="button" data-icon="arrow-u" data-iconpos="notext" class="ui-btn-right ui-btn ui-btn-up-k ui-shadow ui-btn-corner-all ui-btn-icon-notext" data-theme="k" title="Scroll Up" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-arrow-u ui-icon-shadow">&nbsp;</span></span></a>
+                    </td>
+                    <td class="width-sixty-percent align-center">
+                    </td>
+                    <td class="width-twenty-percent align-right">
+
+                        <a href="#" id="scroll_down" onclick="incremental_scroll_down('queue');" data-role="button" data-icon="arrow-d" data-iconpos="notext" class="ui-btn-left ui-btn ui-btn-up-k ui-shadow ui-btn-corner-all ui-btn-icon-notext" data-theme="k" title="Scroll Down" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-arrow-d ui-icon-shadow">&nbsp;</span></span></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+                   
+<script id="queueDustTemplate" type="text/x-dust-template">
+    {#json}
+        <li class='ui-li-has-thumb queued_track{playlist_index}'>
+            <a href='' data-icon='none' onclick='bump_track( {playlist_index} );' class='ui-link-inherit' title='Bump to top of queue'>
+                <img src='{art}' class='ui-li-thumb track-item-image' />
+                <h3 class='track-title-heading ui-li-heading'>{title}</h3>
+                <p class='ui-li-aside ui-li-desc'>{time}</p>
+            </a>
+        </li>
+    {/json}
+</script>
+                    
+<script id="artistsDustTemplate" type="text/x-dust-template">
+    {#json}
+        <li>
+            <a href='{href}' data-transition='{transition}'>{name}
+                <span class='ui-li-count ui-btn-up-{theme_buttons} ui-btn-corner-all'>{count_bubble_value}</span>
+            </a>
+        </li>
+    {/json}
+</script>     
+
+<script id="albumsDustTemplate" type="text/x-dust-template">
+    {#json}
+        <li class='ui-li-has-thumb'>
+            <a href='{href}' class='ui-link-inherit' data-transition='{transition}'>
+                <img src='{art}' class='ui-li-thumb album-art-img' />
+                <h3 class='ui-li-heading album-name-heading'>{name}</h3>
+                <span class='ui-li-count ui-btn-up-{theme_buttons} ui-btn-corner-all'>{count_bubble_value}</span>
+                <p class='ui-li-aside ui-li-desc'>{total_length}</p>
+            </a>
+        </li>
+    {/json}
+</script>                  
+</body>
+</html>

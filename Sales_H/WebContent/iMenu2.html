@@ -1,0 +1,1119 @@
+
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Sistema Punto Venta</title> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    
+    <link rel="stylesheet" href="css/jquery.mobile-1.2.0.css" />
+    <link rel="stylesheet" href="css/jquery-mobile-fluid960.css" />
+    <link rel="shortcut icon" href="favicon.ico"> 
+
+    <script src="js/jquery-1.8.2.min.js"></script>
+    <script src="js/jquery.mobile-1.2.0.min.js"></script>
+
+    <script src="js/dust-full-1.1.1.js"></script>
+    <script src="js/jquery.validate.js"></script>
+    <script src="js/jquery.maskedinput.min.js"></script>
+    <script src="js/jquery.form2js.js"></script>
+    <script src="js/jquery.js2form.js"></script>
+    <script type="text/javascript" src="js/json2.js"></script>
+
+
+
+<style type="text/css">
+
+#ventana {
+   width: 100px;
+   height: 100px;
+   margin: 10px;
+   padding: 0;
+   border: 1px solid rgba(0,0,0,0.5);
+   border-radius: 10px 10px 2px 2px;
+   background: rgba(0,0,0,0.25);
+   box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+   -o-box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+   -webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+   -moz-box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
+}
+
+.checkboxWidth{
+width:53px;
+}
+
+label.error {
+color: red;
+font-size: 10px;
+font-weight: normal;
+line-height: 1.4;
+margin-top: 0.5em;
+width: 100%;
+float: none;
+}
+
+.formatolistapropia {
+text-align:right;
+font-size:12px;
+font-weight:normal;
+}
+
+.width-hundred-percent {
+width:100% !important;
+position: fixed;
+top: 50%;
+left: 0;
+}
+
+#menu {
+position:fixed !important;
+}
+
+
+.display-none {
+display:none;
+}
+.width-two-hundred-pixels {
+width:200px;
+
+}
+.center-element {
+margin-right: auto; 
+margin-left: auto;
+
+}
+
+.align-center {
+text-align: center;
+}
+ 
+.text_title_detail_info{
+font-size: 14px;
+padding: 3px 12px 3px 12px; 
+text-align: center;
+}
+
+.text_title_detail_info2{
+font-size: 16px;
+font-weight: bold;
+text-align: left;
+}
+
+.culumn_1_detail{
+text-align:center; 
+font-size:small; 
+padding: 0px 5px;
+font-weight: bold;
+}
+
+
+.culumn_2_detail{
+text-align:left; 
+padding: 2px 5px 2px 0px;
+text-shadow: none;
+}
+
+/*  top 
+    right 
+    bottom 
+    left */
+
+
+@media screen and (orientation: portrait){
+label.error { margin-left: 0; display: block; }
+}
+
+@media screen and (orientation: landscape){
+label.error { display: inline-block; margin-left: 0%; }
+}
+
+em { color: red; font-weight: bold; padding-right: .25em; }
+
+</style> 
+
+    <script type="text/javascript">
+    
+
+    var navigationInitialized = ' ';
+    var menuOpen = ' ';
+    var scrollX = 0;
+    var scrollY = 0;
+    var pagePosition = 0;
+    var counter = 1;
+    var percent = .25;
+    var scrollPrevented = false;
+    var customerlistcalled = 'notcalled';
+    var page_clientes_status = '';
+
+    // Variable para Reutilizar Objetos de JSON
+    window.jsonData = {};
+
+    $(document).bind("mobileinit", function(){
+      $.mobile.listview.prototype.options.filterPlaceholder = "Filtrar con una busqueda los Resultados...";
+    });
+
+    $(document).on("pageinit", "#bienvenida",function( evt, ui ){
+
+        navigationInitialized = 'X';
+        if(navigator.userAgent.match(/Android/i) ||
+           navigator.userAgent.match(/webOS/i)   ||
+           navigator.userAgent.match(/iPhone/i)  ||
+           navigator.userAgent.match(/iPod/i)    ||
+           navigator.userAgent.match(/BlackBerry/i))
+           {
+            percent = .5;
+           }
+
+          initializeMenu();
+      });
+
+      function resetForm($form) {
+          $form.find('input:text, input:password, input:file, select, textarea').val('');
+          $form.find('input:radio, input:checkbox')
+          .removeAttr('checked').removeAttr('selected');
+      }
+
+
+      function stopScroll(){
+
+        $("#test").val('0');
+        $("#test2").val('0');
+        $("#start").val('0');
+
+        var setValue = $(window).width() * (percent / 2);
+
+        if( pagePosition >= setValue){
+          pagePosition = $(window).width() * percent;
+          menuOpen = 'X';
+          menuSlide();
+          $("#menu").show();
+          $('#menu').css({
+            'z-index': '1500'
+          });
+        } else {
+          pagePosition = 0;
+          menuOpen = ' ';
+          menuSlide();
+          $("#menu").hide();
+        }
+
+      }
+
+      function setMenuHeight(){
+
+        $('#menu').css({
+          width:  $(window).width() * percent,
+          height: $(window).height(),
+        }).page();
+
+      }
+
+      function menuToggle(){
+        if(menuOpen == ' '){
+          var newWidth = $(window).width();
+        } else {
+          var newWidth = $(window).width() * (1 - percent);
+        }
+        $("#page1").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#page2").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#page3").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#bienvenida").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#pagewelcomeclientes").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+
+            
+
+      }
+
+      function menuSlide(){
+        var newWidth = $(window).width() - pagePosition;
+
+        $("#page1").css({
+          left: pagePosition,
+          width: newWidth,
+        }).page();
+
+        $("#page2").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#page3").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#pageclientenuevo").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#bienvenida").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#pagewelcomeclientes").css({
+          left: pagePosition,
+          width: newWidth
+        }).page();
+
+        $("#loading_bar").css({
+        left: (pagePosition * .50)
+        });
+
+      }
+
+      function initializeMenu(){
+        $('#menu').css({
+          position: "fixed",
+          width:  $(window).width() * percent,
+          height: $(window).height(),
+          left: 0,
+          'z-index': '1500'
+        }).page();
+
+        menuToggle();
+      }
+
+      function areYouSure(text1, text2, button, callback) {
+        $("#sure .sure-1").text(text1);
+        $("#sure .sure-2").text(text2);
+        $("#sure .sure-do").on("click.sure", function() {
+
+          callback();
+          $(this).off("click.sure");
+
+
+        }); 
+        
+        $("#sure").popup('open');
+
+      }
+
+     function infoCliente(text1, text2, button, callback) {
+ 
+      $("#popupDialog2").popup('open');
+
+      }
+
+    $(document).on("pageinit", function(){
+      setTimeout(function(){
+        if( navigationInitialized != 'X' ){
+          alert("Redirecting Welcome page");
+          $.mobile.changePage("#bienvenida");
+          location.reload(true);
+        }
+      },500);
+    });
+
+
+
+
+
+
+    //Creacion de Submenu Menu Clientes & pagina de Bienvenida de Clientes
+    $(document).on("pagebeforeshow", "#pagewelcomeclientes", function (evt, ui) {
+          
+        if (navigationInitialized == 'X') {
+
+            var newItems = '<li data-role="list-divider">Page Options</li>';
+            newItems += '<li><a href="#" class="time">Time</a></li>';
+            newItems += '<li><a href="#pageclientenuevo" id="botonclientenuevo" data-icon="plus" class="clientenuevo" data-transition="fade">Agregar Cliente</a></li>';
+            $(".pageOpts").empty();
+            $(".pageOpts").append(newItems).listview("refresh");
+            
+            //$(".listaclientes").empty();
+
+            menuToggle();
+
+        }
+
+    });
+
+
+    $(document).on("pagebeforeshow", "#page2", function () {
+      if (navigationInitialized == 'X') {
+        var newItems = '<li data-role="list-divider">Page Options</li>';
+        newItems += '<li><a href="#" class="add">Add Item</a></li>';
+        newItems += '<li><a href="#" class="empty">Clear List</a></li>';
+        $(".pageOpts").empty();
+        $(".pageOpts").append(newItems).listview("refresh");
+      }
+    });
+
+    $(document).on("pagebeforeshow", "#page3", function(){
+      if( navigationInitialized == 'X'){
+        var newItems = '<li data-role="list-divider">Page Options</li>';
+        newItems += '<li><a href="#" class="show1">List 1</a></li>';
+        newItems += '<li><a href="#" class="show2">List 2</a></li>';
+        newItems += '<li><a href="#" class="show3">List 3</a></li>';
+        $(".pageOpts").empty();
+        $(".pageOpts").append(newItems).listview("refresh");
+      }
+    });
+
+      $(document).on('orientationchange', function(){
+        if(menuOpen == 'X'){
+          pagePosition = $(window).width() * percent;
+        }
+        initializeMenu();
+      });
+
+
+
+
+
+
+      $(document).on("click", ".menu", function(){
+        if( menuOpen == ' ' ){
+          pagePosition = $(window).width() * percent;
+          menuOpen = 'X';
+        } else {
+          pagePosition = 0;
+          menuOpen = ' ';
+        }
+        menuSlide();
+        $("#menu").toggle();
+      });
+
+      $(document).on("click", ".productoswelcome", function(){
+
+
+              });
+
+      $(document).on("click", ".clienteswelcome", function(){
+          
+          if (customerlistcalled == 'notcalled' ) {
+            $("#juntar").html("");
+
+            $("#loading_txt").html("Cargando Listado de Clientes");
+            $("#loading_bar").fadeIn(1000);
+            
+
+            $.ajax({
+                type: "POST",
+                url: "GetCustomers",
+                dataType: "json",
+                success: function (data) {
+
+                setTimeout(function(){
+
+                      $("#loading_bar").hide();
+                      more = data;
+                      json = more.data[0];
+                      window.jsonData = {};
+                      window.jsonData = json;
+                      var template = $( "#customers" ).html();
+                      var compiled = dust.compile( template, "customersC" ); //uso de Dust para renderizar la Lista...
+                      dust.loadSource(compiled);
+                      dust.render( "customersC" , json, function( err, result ) {
+                          // Append the item HTML onto the main HTML string
+                          html = result;
+                      } );
+                      $( "#juntar" ).append( html );
+                      $( "#juntar" ).listview( 'refresh' );
+
+                       
+                       $(".listaclientes").listview({
+                            autodividers: true,
+                            autodividersSelector: function (li) {
+
+                                var text = $(li).find('#nombre').text();
+                                if (!text) {
+                                    return null;
+                                }
+                                // create the text for the divider (first uppercased letter)
+                                text = text.slice(0, 1).toUpperCase();
+                                return text;
+                            }
+                        });
+
+                        $(".listaclientes").listview('refresh');
+                        customerlistcalled = 'called';
+                        
+                },500);
+                }
+            });
+
+          }
+      });
+
+      $(document).on("click", ".add", function(){
+        counter = counter + 1;
+        var newItem = '<li>Test Item ' + counter + '</li>';
+        $(".log").append(newItem).listview('refresh');
+        var newBox = '<input type="checkbox" name="checkbox-" id="checkbox-" class="custom"> <label for="checkbox-">I agree</label>';
+        $(".log").append(newBox).trigger('create');
+      });
+
+      $(document).on("click", ".empty", function(){
+        $(".log").empty().listview('refresh');
+        counter = 0;
+      });
+
+      $(document).on("click", ".time", function(){
+
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        var seconds = currentTime.getSeconds();
+        var suffix;
+        if( hours > 12 ){
+          hours = hours - 12;
+          suffix = 'PM';
+        } else {
+          suffix = 'AM';
+        }
+        if( minutes < 10 ){
+          minutes = '0' + minutes;
+        }
+        var clock = hours + ':' + minutes + ':' + seconds + ' ' + suffix;
+
+        alert(clock); 
+      });
+
+
+      //Mostrando Datos de Cliente en Detalle
+     $(document).on("click", ".send4detail", function () {
+
+        $("#detalles").empty();
+
+        
+        var detail_id = $(this).attr('id');
+        
+        for (var i = 0; i < window.jsonData.json.length; i++) {
+      
+          if (window.jsonData.json[i].person_id == detail_id) { //Si el usuario clickeado se encuentra 
+              
+              var key_1 = window.jsonData.json[i];
+
+              maxim_ok = 0;
+              
+              var i3 = 0;
+
+                for(var key in key_1) { //Determinacion tamañomaximo de etiqueta HTML y valor en el objeto json
+
+                    var label_text    = ($('#detalles div:nth-child('+i3+')')).text();
+                    var value = key_1[key];
+
+                    var maxim = (label_text + value).length;
+
+                    if (maxim > maxim_ok) {
+                      maxim_ok = maxim;
+                    }
+
+                    i3 = ++i3;
+
+                }
+     
+              // Finalmente Se pegan Los datos Completos al Dialog ya con su maximo width Establecido...
+              var detail_datos = window.jsonData.json[i];
+
+
+             
+              //$("#detail_head_name").html(detail_datos.first_name+" "+detail_datos.last_name+" "+detail_datos.middle_name);
+              //$("#detail_head_corp").html(detail_datos.company_name);
+              //$("#detail_foot_id").html("Clave Cliente: "+detail_datos.account_number);
+              
+              content =  '<fieldset class="container_12">';
+                 
+              content += '<div class="grid_12 culumn_2_detail"><strong>Email: </strong> '+ detail_datos.email +'</div>';
+              content += '<div class="grid_12 culumn_2_detail"><strong>RFC: </strong> '+ detail_datos.rfc +'</div>';
+              content += '<div class="grid_12 culumn_2_detail"><strong>Telefono de Oficina: </strong>'+ detail_datos.phone_number +'</div>';
+              content += '<div class="grid_12 culumn_2_detail"><strong>Telefono Celular: </strong>'+ detail_datos.cellphone +'</div>';
+              content += '<div class="grid_12 culumn_2_detail"><strong>Direccion: </strong>'+ detail_datos.address_1 +'</div>';
+              content += '<div class="grid_5 culumn_2_detail"><strong>Ciudad: </strong>'+ detail_datos.city +'</div>';
+              content += '<div class="grid_6 culumn_2_detail"><strong>Estado: </strong>'+ detail_datos.state +'</div>';
+              content += '<div class="grid_5 culumn_2_detail"><strong>Codigo Postal: </strong>'+ detail_datos.zip +'</div>';
+              content += '<div class="grid_6 culumn_2_detail"><strong>Pais: </strong>'+ detail_datos.country +'</div>';
+              //content += ''+  +'';
+              content += '<div class="grid_12 culumn_2_detail"><strong>Cliente desde: </strong>'+ detail_datos.fecha_alta +'</div>';
+              content += '</fieldset>';
+              $(content).appendTo("#detalles");
+
+              $('#popupDialog2').trigger('create');
+          }
+        }
+
+
+      });
+
+       $(document).on("click", ".send4update", function () {
+
+        page_clientes_status = 'costumer_update';
+
+            $('#fclientes').empty();
+            $("#pageclientenuevo").find("h1").html('Modificar info de cliente');
+            
+            var boxval = $(this).attr('id');
+
+            for (var i = 0; i < window.jsonData.json.length; i++) {
+
+              if (window.jsonData.json[i].person_id == boxval) {
+
+                  var datos = window.jsonData.json[i];
+
+                  var loadUrl = "fclientes2.html";
+                  $("#fclientes").load(loadUrl, function () {
+                  
+                  js2form(document.getElementById('customer_form'), datos);
+
+                  $(this).trigger('create');
+
+                });
+
+              }
+            }
+
+        });
+
+
+//Regreso a Pagina de Bienvenida
+
+       $(document).on("click", ".bienvenida", function(){
+
+        $(".pageOpts").empty();
+        $(".pageOpts").listview("refresh");
+ 
+
+      });
+
+//Creacion de pagina con Formulario Cliente Nuevo
+
+       $(document).on("click", ".clientenuevo", function () {
+         
+         page_clientes_status = 'new_costumer';
+
+         $('#fclientes').html("<div></div>");
+         $("#pageclientenuevo").find("h1").html('Agregar Cliente Nuevo...')
+
+         $.ajaxSetup({
+           cache: false
+         });
+      //   var ajax_load = "<img src='images/ajax-loader.gif' alt='loading...' />";
+         var loadUrl = "fclientes2.html";
+
+         $("#fclientes").load(loadUrl, function () {
+           $(this).trigger('create');
+         });
+
+       });
+
+
+
+
+
+
+//Acciones en el Formulario Cliente Nuevo y Desactivacion Boton "Agregar Cliente"
+       $(document).on("pageshow", "#pageclientenuevo", function () {
+
+        var same_acc_upd = "";
+        var url_destiny  = "";
+        var finalmessage = "";
+
+        $('#botonclientenuevo').addClass('ui-disabled');
+        $('[type="submit"]').button('disable'); 
+
+
+        if (page_clientes_status == "new_costumer") {
+
+          $("#rfc").mask("aaaa999999-***");
+
+          url_destiny  = "InsertCustomer"
+          finalmessage = "Cliente Ingresado con Exito";
+
+          $('#botonclientenuevo').click(false);
+
+        }
+
+
+        if (page_clientes_status == "costumer_update") {
+
+          url_destiny  = "CustomerUpdate";
+          finalmessage = "Cliente Modificado con Exito";
+          same_acc_upd = $("#account_number").val();
+          $('[type="submit"]').button('enable'); 
+
+        }
+
+     
+
+          //Customizing Error Validation Messages
+          $.extend(jQuery.validator.messages, {
+              required: "Campo Requerido!.",
+              remote: "Please fix this field.",
+              email: "Ingresa una Direccion de correo Valida!",
+              url: "Please enter a valid URL.",
+              date: "Please enter a valid date.",
+              dateISO: "Please enter a valid date (ISO).",
+              number: "Please enter a valid number.",
+              digits: "Please enter only digits.",
+              creditcard: "Please enter a valid credit card number.",
+              equalTo: "Please enter the same value again.",
+              accept: "Please enter a value with a valid extension.",
+              maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
+              minlength: jQuery.validator.format("Favor de teclear al menos {0} caracteres!"),
+              rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
+              range: jQuery.validator.format("Please enter a value between {0} and {1}."),
+              max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
+              min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
+          });
+
+
+
+
+    //$.validator.messages.required = 'required333';
+       var validator = $("#customer_form").validate({
+
+            messages: {},
+
+            //cuando se Presiona Boton Enviar de la Forma, despues de haberla Validado...
+            submitHandler: function (form) {
+
+              areYouSure("Enviar Informacion?", " Confirme", "Exit", function() {
+                
+                  //Conversion de los Datos de la Forma a objeto JsOn
+                  var formData = form2js('customer_form', '.', true,
+                  function (node) {
+                      if (node.id && node.id.match(/callbackTest/)) {
+                          return {
+                              name: node.id,
+                              value: node.innerHTML
+                          };
+                      }
+                  });
+
+                  alert(JSON.stringify(formData, null, '\t'));
+                  var data = (JSON.stringify(formData, null, '\t'));
+
+                  // Uso de jQuery post, no Mobile para envio de datos del formulario.
+                  $.post(url_destiny, {data: data}, function (response) {
+
+                  // Variable Bandera para Recargar el Listado de Clientes despues de ingresar el nuevo...
+                    customerlistcalled = 'notcalled';
+                    console.log(response);
+                  }
+                  ); 
+
+                  //on success:
+                  $('#fclientes').html("<div id='message'></div>");
+                  $('#message').html("<h2>"+finalmessage+"</h2>").hide().fadeIn(3000, function () {});
+
+              });
+
+            }
+
+
+        });
+
+        
+        $("#zip").mask("99999");
+        $("#phone_number").mask("(999) 999-9999? x99999");
+        $("#cellphone").mask("(999) 999-9999");
+        
+        $('#p_moral').change(function(){
+        this.checked ? $("#rfc").mask("aaa999999-***") : $("#rfc").mask("aaaa999999-***");
+        });
+
+
+        $("#account_number").change(function() {
+
+          $("#loadin_u").hide;
+          $("#status").hide();
+          var usr = $("#account_number").val();
+
+          if (same_acc_upd == usr){ $('[type="submit"]').button('enable'); }
+         
+
+          if(usr.length >= 3  )     {
+              
+             if (same_acc_upd != usr) {
+              
+              $("#loadin_u").html('<img align="absmiddle" src="images/loading_more_bar.gif" width="30" height="30"/> Verificando Disponibilidad...');
+              $("#loadin_u").show();
+
+              //Llamada al servlet para verificar existencia de usuario donde se devuelve true or false
+              $.ajax({
+              type: "POST",
+              url: "CheckUser",
+              dataType: "json", // Para que no devuelvas /r/n
+              data: "account_number="+ usr,
+              success: function(data){
+
+                  setTimeout(function(){  
+                  
+                        $("#loadin_u").hide();
+                        
+                        if (data == false) {
+
+                           $("#status").html('<div id="sta"><img align="absmiddle" src="images/accepted.png" /> Aceptado!</div>');
+                           $("#status").fadeIn(1000);
+                           $('[type="submit"]').button('enable');
+
+                        }
+                        
+                        else {
+
+                           $("#status").html('<span style="color: red;">La Clave: <b>'+(usr).toUpperCase()+'</b> ya se encuentra en uso.</span>');
+                           $('#status').fadeIn(1000);
+                           $("#account_number").focus();
+                           $('[type="submit"]').button('disable'); 
+                        }
+                  },500);
+
+
+                }
+              });
+
+          }
+
+          }
+
+        else
+        
+          {
+
+
+          $("#status").html('La Clave de Cliente debe contener al menos 4 caracteres...');
+          $("#status").fadeIn(1000);
+          $("#account_number").focus();
+          $('[type="submit"]').button('disable'); 
+
+          }
+        });
+        
+  });
+
+
+    $(document).on("click", ".show1", function(){
+      $("#div1").show();
+      $("#div2").hide();
+      $("#div3").hide();
+    });
+
+    $(document).on("click", ".show2", function(){
+      $("#div2").show();
+      $("#div1").hide();
+      $("#div3").hide();
+    });
+
+    $(document).on("click", ".show3", function(){
+      $("#div3").show();
+      $("#div1").hide();
+      $("#div2").hide();
+    });
+
+
+  </script>
+
+</head>
+
+<body class="body">
+
+  <!-- Wrapper -->
+  <div id="wrapper">
+
+    <!-- Pagina Bienvenida -->
+    <div data-role="page" id="bienvenida" data-theme="a">
+
+      <!-- Encabezado -->
+      <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+        <a type="button" class="menu" data-icon="gear">Menu</a>
+        <h1 style="white-space:normal">Welcome Page</h1>
+
+      </div>
+
+      <!-- /Encabezado -->
+
+      <!-- Contenido -->
+      <div data-role="content">
+        <p>Welcome Page!</p>
+     </div>
+      <!-- /Contenido -->
+    </div>
+    <!-- /Pagina Bienvenida -->
+
+    <!-- page1 -->
+    <div data-role="page" id="page1" data-theme="a">
+
+      <!-- Header -->
+      <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+        <a type="button" class="menu" data-icon="gear">Menu</a>
+        <h1 style="white-space:normal">Clientes</h1>
+        <a href="iMenu.html" data-direction="reverse" type="button" data-icon="home">Home</a>
+      </div>
+      <!-- /Header -->
+
+      <!-- Main Content -->
+      <div data-role="content">
+
+      </div>
+      <!-- /Main Content -->
+
+    </div>
+    <!-- /page1 -->
+
+    <!-- Page 2 -->
+    <div data-role="page" id="page2" data-theme="a">
+
+      <!-- Header -->
+      <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+        <a type="button" class="menu" data-icon="gear">Menu</a>
+        <h1 style="white-space:normal">Productos</h1>
+        <a href="iMenu.html" data-direction="reverse" type="button" data-icon="home">Home</a>
+      </div>
+      <!-- /Header -->
+
+      <!-- Main Content -->
+      <div data-role="content">
+        <p>Below is a list of items</p>
+        <ul data-role="listview" data-inset="true" class="log">
+          <li>Test Item 1</li>
+        </ul>
+      </div>
+      <!-- /Main Content -->
+
+    </div>
+    <!-- /Page 2 -->
+
+
+    <!-- Page 3 -->
+    <div data-role="page" id="page3" data-theme="a">
+
+      <!-- Header -->
+      <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+        <a type="button" class="menu" data-icon="gear">Menu</a>
+        <h1 style="white-space:normal">Proveedores</h1>
+        <a href="iMenu.html" data-direction="reverse" type="button" data-icon="home">Home</a>
+      </div>
+      <!-- /Header -->
+
+      <!-- Main Content -->
+      <div data-role="content">
+        <div type="content" id="div1">
+          <ul data-role="listview" data-inset="true" data-theme="a" data-divider-theme="a">
+            <li data-role="list-divider">List 1</li>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+          </ul>
+        </div>
+        <div type="content" id="div2" hidden >
+          <ul data-role="listview" data-inset="true" data-theme="b" data-divider-theme="b">
+            <li data-role="list-divider">List 2</li>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+          </ul>
+        </div>
+        <div type="content" id="div3" hidden >
+          <ul data-role="listview" data-inset="true" data-theme="c" data-divider-theme="c">
+            <li data-role="list-divider">List 3</li>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /Main Content -->
+
+    </div>
+    <!-- /Page 3 -->
+
+
+    <!-- Pagina Formulario Nuevo Cliente -->
+    <div data-role="page" id="pageclientenuevo" data-theme="a">
+
+      <!-- Encabezado -->
+      <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+        <a type="button" class="menu" data-icon="gear">Menu</a>
+        <h1 style="white-space:normal">nuevo Cliente</h1>
+        <a href="iMenu.html" data-direction="reverse" type="button" data-icon="home">Home</a>
+      </div>
+
+      <!-- /Encabezado -->
+
+      <!-- Contenido -->
+      <div data-role="content" id='fclientes'>
+        <p>Aqui Va Formulario de Clientes</p>
+
+
+
+      </div>
+
+      <div data-role="popup" id="sure" data-title="Are you sure?" data-overlay-theme="a">
+      <div data-role="content">
+        <h3 class="sure-1">???</h3>
+        <p class="sure-2">???</p>
+        <a href="#" class="sure-do" data-role="button" data-theme="b" data-rel="back">Yes</a>
+        <a href="#" data-role="button" data-theme="c" data-rel="back">No</a>
+      </div>
+      </div>
+      <!-- /Contenido -->
+
+    </div>
+    <!-- /Pagina Formulario Nuevo Cliente -->
+
+    <!-- Pagina Welcome Clientes -->
+        <div data-role="page" id="pagewelcomeclientes" data-theme="a">
+           <!-- Encabezado -->
+           <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+              <a type="button" class="menu" data-icon="gear">Menu</a>
+              <h1 style="white-space:normal">Listado de Clientes</h1>
+              <a href="iMenu.html" data-direction="reverse" type="button" data-icon="home">Home</a>
+           </div>
+           <!-- /Encabezado -->
+
+           <!--  Detalle Completo Cliente -->
+
+      <div data-role="popup" id="popupDialog2" data-title="Are you sure?" data-overlay-theme="a">
+      <div id="detail_head_name" class="text_title_detail_info">Jose Alonso Hurtado Tenorio </div>  
+      <div data-role="content">
+          <div id="change_w" style="font-size: small; margin: 0; width:350px">
+                    <div id="detalles" style="padding-left:5px;">
+
+                    </div>
+          </div>
+      </div>
+      </div>
+
+
+
+           <div data-role="popup" id="popupDialog22" data-theme="b" data-position-to="origin" data-overlay-theme="a" >
+              
+              <div data-theme="a" data-role="header" role="banner">
+              <div id="detail_head_name" class="text_title_detail_info">Jose Alonso Hurtado Tenorio </div>
+              </div>
+
+
+                <div id="change_w" style="font-size: small; margin: 0; width:400px"> 
+                  <div class="text_title_detail_info2">
+                    <span id="detail_head_corp" style="padding-left:5px;">Corp
+                    </span>
+                  </div>
+                 
+
+
+
+                </div>
+              
+              <div data-theme="a" data-role="footer" role="banner">
+              <div id="detail_foot_id" class="text_title_detail_info">Clave Cliente</div>
+              </div>
+          </div>
+
+          <!-- /Detalle Completo Cliente -->
+
+           <!-- Contenido -->
+           <div data-role="content" id='contentwelcomeclientes'>
+                  <ul   data-role="listview" 
+                    data-inset="true" 
+                    data-filter="true"
+                    data-autodividers="true"
+                    data-filter-placeholder="Filtrar listado de clientes con una busqueda..." 
+                    data-sort="true" 
+                    data-theme="c"
+                    data-divider-theme="c"
+                    data-split-icon="grid" 
+                    data-split-theme="d"
+                    id="juntar"
+                    class="listaclientes"
+                    >
+               </ul>
+
+               <div id="loading_bar" class="width-hundred-percent" style="display:none">
+                <div class="width-two-hundred-pixels center-element align-center">
+                  <img src="images/loading_bar.gif" />
+                  <div id="loading_txt">Procesando...</div>
+                </div>
+              </div>   
+
+
+           </div>
+           
+
+           <!-- /Contenido -->
+     </div>
+    <!-- /Pagina Welcome Clientes -->
+
+
+    <!-- Menu -->
+    <div data-role="page" id="menu" data-theme="c">
+
+      <div data-role="header" data-theme="c">
+        <h1>Options</h1>
+      </div>
+
+      <div data-role="content" data-theme="c">
+        <ul data-role="listview" data-theme="c" data-divider-theme="c" data-inset="true">
+          <li data-role="list-divider">Pages</li>
+          <li><a href="#pagewelcomeclientes" class='clienteswelcome' data-transition="fade" data-direction="reverse">Clientes</a></li>
+          <li><a href="#page2" class='productoswelcome' data-transition="fade">Productos</a></li>
+          <li><a href="#page3" data-transition="fade">Proveedores</a></li>
+          <li><a href="#ventana" data-transition="fade">Ventas</a></li>
+          <li><a href="#page4" data-transition="fade">Almacen</a></li>
+        </ul>
+        <ul data-role="listview" data-theme="c" data-divider-theme="c" data-inset="true" class="pageOpts">
+
+        </ul>
+      </div>
+
+    </div>
+    <!-- /Menu -->
+
+
+
+  </div>
+
+
+
+
+
+
+  <!-- /Wrapper -->
+
+
+            <script id="customers" type="text/x-dust-template">
+
+            {#json}
+            <li>
+            <a href="#popupDialog2" data-rel="popup" data-transition="pop" id="{person_id}" class="send4detail">
+            <div class="formatolistapropia">
+            <div class="ui-grid-b" id="nombre"><div class="ui-block-a" style="text-align:left; font-size:15px; font-weight:bold;">{last_name} {middle_name}, {first_name} </div>
+            <div class="ui-block-b" >Tel Oficina: {phone_number}</div>
+            <div class="ui-block-c" >{email}</div>
+            <div class="ui-block-a" style="text-align:left">{company_name}</div>
+            <div class="ui-block-b" >Celular: {cellphone}</div>
+            <div class="ui-block-c" ><strong>Clave: </strong>{account_number}</div>
+            </div>  
+            </div>
+            </a>
+            <a href="#pageclientenuevo" id="{person_id}" class="send4update"></a>
+            {~n}
+            </li>
+            {/json}
+
+            </script>
+
+</body>
+</html>

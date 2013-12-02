@@ -1,0 +1,125 @@
+
+<form id="customer_form" accept-charset="utf-8" method="post" action="#" >
+      
+          <label  for="first_name">Nombre de Cliente o Representante Legal:</label>
+          <input type="text" id="first_name" value="" name="first_name" required minlength="2" style="width:50%" >  
+          
+          <fieldset class="ui-grid-a">
+
+               <div class="ui-block-a">
+               <label  for="last_name">Apellido Paterno:</label> 
+               <input type="text" id="last_name" value=""  name="last_name" required minlength="2" style="width:90%">  
+               </div>
+
+               <div class="ui-block-b">
+               <label  for="last_name">Apellido Materno:</label> 
+               <input type="text" id="middle_name" value=""  name="middle_name" minlength="2" style="width:90%">  
+               </div>
+
+          </fieldset>
+          
+          <fieldset class="ui-grid-c">
+               
+               <div class="ui-block-a">
+               <label for="company_name">Razon Social:</label>
+               <input type="text" id="company_name" value=""  name="company_name" style="width:90%"> 
+               </div>
+
+               <div class="ui-block-b">
+               <label for="rfc">RFC:</label>
+               <input type="text" id="rfc" value=""  name="rfc" required style="width:80%">  
+               </div>
+               
+               <div class="ui-block-c">
+               <fieldset data-role="controlgroup" class="checkboxWidth">
+                  <span>Facturable</span>             
+                  <input type="checkbox" name="taxable" id="taxable" data-iconpos="notext" data-mini="true" data-type="horizontal" />
+                  <label for="taxable" action="selectValue" data="test"></label> 
+               </fieldset>
+               </div>
+
+               <div class="ui-block-d">
+               <label for="account_number">Clave de Cliente:</label>          
+               <input type="text" id="account_number" value="" required name="account_number" style="width:80%">  
+               </div>
+
+          </fieldset>
+
+
+         <fieldset class="ui-grid-a">
+
+               <div class="ui-block-a">
+               <label for="address_1">Direccion:</label>
+               <input type="text" id="address_1" value=""  required name="address_1" style="width:90%">  
+               </div>
+
+               <div class="ui-block-b">
+               <label for="zip">Codigo Postal:</label>
+               <input type="text" id="zip" value=""  required name="zip" style="width:30%">   
+               </div>
+
+          </fieldset>
+
+           <fieldset class="ui-grid-b">
+
+               <div class="ui-block-a">
+               <label for="city">Ciudad:</label>
+               <input type="text" id="city" value="" required name="city" style="width:80%">  
+               </div>
+
+               <div class="ui-block-b">
+               <label for="state">Estado:</label> 
+               <input type="text" id="state" value=""  required name="state" style="width:80%" >  
+               </div>
+
+               <div class="ui-block-c">
+               <label for="country">Pais:</label> 
+               <input type="text" id="country" value="Mexico" name="country" style="width:50%">
+               </div>
+
+          </fieldset>
+
+          <fieldset class="ui-grid-b">
+               
+               <div class="ui-block-a">
+               <label for="email">E-Mail:</label> 
+               <input type="text" id="email" value=""  name="email" style="width:80%">  
+               </div>
+
+               <div class="ui-block-b">
+               <label for="phone_number">Telefono de Oficina:</label> 
+               <input type="text" id="phone_number" value=""  name="phone_number" style="width:80%">       
+               </div>
+               
+               <div class="ui-block-c">
+               <label for="cellphone">Telefono Celular:</label> 
+               <input type="text" id="cellphone" value=""  name="cellphone" style="width:80%">  
+               </div>
+
+          </fieldset>
+      
+          <label for="comments">Comentarios:</label> 
+          <textarea id="comments" rows="5" cols="17" name="comments"></textarea>  
+
+  
+          <fieldset class="ui-grid-b">
+                    <div class="ui-block-a"><button input type="submit" id="submit">Enviar</button></div>
+                    <div class="ui-block-b"><button input type="reset" >Limpiar</button></div>
+                    <div class="ui-block-c"><button input type="button" >Cancelar</button></div>
+          </fieldset>
+         <!-- <input type="submit" id="submit" value="Enviar" name="submit" > -->
+
+ </form>
+
+
+
+
+
+
+
+
+
+
+
+
+

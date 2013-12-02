@@ -1,0 +1,147 @@
+
+@charset "utf-8";
+* {
+    margin: 0;
+    outline: medium none;
+    padding: 0;
+}
+body {
+    background: url("../images/body_bg.png") repeat-x scroll 0 0 #009FAA;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 62.5%;
+    margin-top: 40px;
+}
+#contact_form {
+    background: url("../images/form_bg.png") no-repeat scroll 0 0 transparent;
+    height: 200px;
+    margin: 0 auto;
+    padding: 10px 0;
+    position: relative;
+    width: 600px;
+}
+form fieldset {
+    border: 0 none;
+    display: block;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 1.2em;
+    margin: 0 0 20px;
+    padding: 0 10px 8px;
+    position: relative;
+    width: 578px;
+}
+form fieldset legend {
+    background: none repeat scroll 0 0 white;
+    border-color: #BBBB66;
+    border-style: solid;
+    border-width: 1px;
+    color: #3D7169;
+    font-size: 140%;
+    font-variant: small-caps;
+    font-weight: bold;
+    margin: 0 0 10px;
+    padding: 4px 8px;
+    position: relative;
+    top: -12px;
+}
+label {
+    color: #FFFFDD;
+    display: block;
+    float: left;
+    font-size: 90%;
+    font-weight: bold;
+    margin: 0.2em 0.2em 0 0;
+    padding: 8px 0;
+    text-align: right;
+    width: 10em;
+}
+label.error {
+    background: url("../images/cancel.png") no-repeat scroll left center transparent;
+    color: red;
+    font-weight: normal;
+    padding-left: 25px;
+    text-align: left;
+    width: 140px;
+}
+input.text-input {
+    color: #333333;
+    margin: 4px;
+    padding: 2px 0;
+}
+label#name_label {
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+input#name {
+    left: 110px;
+    position: absolute;
+    top: 0;
+}
+label#name_error {
+    left: 120px;
+    position: absolute;
+    top: 22px;
+}
+label#email_label {
+    left: 0;
+    position: absolute;
+    top: 45px;
+}
+input#email {
+    left: 110px;
+    position: absolute;
+    top: 45px;
+}
+label#email_error {
+    left: 120px;
+    position: absolute;
+    top: 67px;
+}
+label#phone_label {
+    left: 0;
+    position: absolute;
+    top: 90px;
+}
+input#phone {
+    left: 110px;
+    position: absolute;
+    top: 90px;
+}
+label#phone_error {
+    left: 120px;
+    position: absolute;
+    top: 112px;
+}
+input.button {
+    background: none repeat scroll 0 0 #CCCCCC;
+    border: 2px solid #FFFFFF;
+    color: #3D7169;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    left: 120px;
+    margin: 20px 0 0;
+    padding: 3px 6px;
+    position: absolute;
+    top: 125px;
+}
+input.button:hover {
+    background: none repeat scroll 0 0 #009FAA;
+    color: white;
+}
+#message {
+    margin: 60px 0 0 100px;
+    width: 180px;
+}
+#message h2 {
+    color: white;
+    font-size: 150%;
+}
+#message p {
+    color: white;
+    font-weight: bold;
+    margin: 6px 0;
+}
+#checkmark {
+    left: -60px;
+    position: relative;
+    top: -46px;
+}

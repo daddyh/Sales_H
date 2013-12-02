@@ -1,0 +1,103 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>Test Mobile</title> 
+<meta name="keywords" content="words that relate to the website and are used by search engines to rank sites during searches, words are spaced by commas like, this" >
+<meta name="description" content="This is a short summary of your site, which is displayed by search engines for the user to view." />
+<meta name="copyright" content="copyright information"/>
+<meta name="publisher" content="publisher info"/>
+<meta name="author" content="Alonso Wallace" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+<link rel="stylesheet" href="960.css" />
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+</head> 
+
+<style type="text/css">
+
+
+<body>
+
+        <div data-role="page" id="pagewelcomeclientes" data-theme="a">
+           <!-- Encabezado -->
+           <div data-role="header" data-theme="a" data-tap-toggle="false" data-id="header" data-position="absolute">
+              <a type="button" class="menu" data-icon="gear">Menu</a>
+              <h1 style="white-space:normal">Listado de Clientes</h1>
+              <a href="iMenu.html" data-direction="reverse" type="button" data-icon="home">Home</a>
+           </div>
+           <!-- /Encabezado -->
+
+           <!--  Detalle Completo Cliente -->
+           <div data-role="popup" id="popupDialog2" data-theme="b" data-position-to="origin" data-overlay-theme="a" >
+              <div data-theme="a" data-role="header" role="banner">
+              <p class="ui-title" role="heading" aria-level="1" id="detail_head" style="font-size:12px;" >Informacion Detallada: </p>
+              </div>
+              <div data-role="content" id='detail_cliente'>
+                <div class="ui-grid-a" id="customer_info">
+                  <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="text-align:right; font-size:12px;">Nombre: </div></div>
+                  <div class="ui-block-b"><div class="ui-bar ui-bar-c" style="text-align:left; font-size:12px;" id="pupfirstname3">Right Blockxxxxxxx</div></div>
+                </div>
+
+                <p>xxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+              </div>
+          </div>
+          <!-- /Detalle Completo Cliente -->
+
+           <div data-role="popup" id="popupDialog22" data-theme="b" data-position-to="origin" data-overlay-theme="a" div id="popupDialog" class="ui-corner-all ui-popup ui-body-c ui-overlay-shadow" style="max-width:400px;" data-theme="c" data-overlay-theme="a" data-role="popup" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+
+            <fieldset class="container_12">
+            <div class="grid_6">
+            <p>Alonso Wallace</p>
+            </div><!--grid_3-->
+            <div class="grid_6">
+            <p>Wallace</p>
+            </div><!--grid_3-->     
+            </fieldset>
+
+          </div>
+
+            <div id="popupDialog" class="ui-corner-all ui-popup ui-body-c ui-overlay-shadow" style="max-width:500px;" data-theme="c" data-overlay-theme="a" data-role="popup" aria-disabled="false" data-disabled="false" data-shadow="true" data-corners="true" data-transition="none" data-position-to="origin">
+
+            <div style="width: 450px; padding:5px; font-size: small; margin: 0;"> 
+                <div class="ui-grid-a" id="customer_info">
+                  <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="text-align:right; font-size:small; padding: 0.4em 15px;">Nombre: </div></div>
+                  <div class="ui-block-b"><div style="text-align:left; padding: 7px;" id="pupfirstname">x</div></div>
+                </div>
+            </div>
+
+            </div>
+
+
+           <!-- Contenido -->
+           <div data-role="content" id='contentwelcomeclientes'>
+                  <ul   data-role="listview" 
+                    data-inset="true" 
+                    data-filter="true"
+                    data-autodividers="true"
+                    data-filter-placeholder="Filtrar listado de clientes con una busqueda..." 
+                    data-sort="true" 
+                    data-theme="c"
+                    data-divider-theme="c"
+                    data-split-icon="grid" 
+                    data-split-theme="d"
+                    id="juntar"
+                    class="listaclientes"
+                    >
+               </ul>
+
+               <div id="artistsLazyloaderProgressDiv" class="width-hundred-percent" style="display:none">
+                <div class="width-two-hundred-pixels center-element align-center">
+                  <img src="http://www.musotic.com/images/loading_more_bar.gif" />
+                </div>
+              </div>   
+
+
+           </div>
+           
+
+           <!-- /Contenido -->
+     </div>
+
+<body>
